@@ -4,7 +4,7 @@ hasher
 > A tiny hashchange router inspired by express.js & page.js
 
 * hasher is a tiny hashchange router for local web applications.  
-  Most web applications now use "pushstate" for create its router.  
+  Most web applications now use "pushstate" for its routing function.  
   "hashchange" is legacy solusion, but it is still useful for the application without server 
   (for example: local node-webkit applications).
 
