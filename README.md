@@ -12,14 +12,15 @@ hasher
 ```javascript
 var hasher = require( 'hasher' );
 
+// BASEPATH
 hasher( '/', index );
 
-// http://localhost/#/user/...
+// BASEPATH/#/user/...
 hasher( '/user/:id', load, show );
 hasher( '/user/:id/edit', load, edit );
 hasher( '/user/:id/delete', delete );
 
-// http://localhost/#/blog/20140315/... 
+// BASEPATH/#/blog/20140315/... 
 hasher( '/blog/:date/:page?', show_blog );
 hasher( '/blog/:date/edit', edit_blog );
 
@@ -30,10 +31,9 @@ hasher(); //start listening for hashchange event
 
 ## API
  * **hasher( routing, callback, [callback...] )**  
-   set router functions.
+   set routes.
  * **hasher()**  
    start listening for hashchange event.
 
 ## Based on
- * [path-to-regexp](https://github.com/component/path-to-regexp) by TJ Holowaychuk.
  * [page.js](https://github.com/visionmedia/page.js) by TJ Holowaychuk.
