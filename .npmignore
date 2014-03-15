@@ -1,0 +1,6 @@
+.git*
+.editorconfig
+.travis.yml
+.npmignore
+Gruntfile.*
+test/*
