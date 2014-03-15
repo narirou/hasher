@@ -1,0 +1,21 @@
+{
+  "name": "hasher",
+  "description": "A tiny hashchange router inspired by express.js & page.js",
+  "version": "0.0.1",
+  "auther": "narirou <narirou.github@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/narirou/hasher.git"
+  },
+  "main": "hasher.js",
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "keywords": [
+    "router",
+    "route",
+    "hashchange"
+  ],
+  "readmeFilename": "README.md",
+  "license": "MIT"
+}
