@@ -3,7 +3,7 @@ hasher
 
 > A tiny hashchange router inspired by express.js & page.js
 
-* hasher is a tiny hashchange rounter for local web applications.  
+* hasher is a tiny hashchange router for local web applications.  
   Most web applications now use "pushstate" for create its router.  
   "hashchange" is legacy solusion, but it is still useful for the application without server 
   (for example: local node-webkit applications).
