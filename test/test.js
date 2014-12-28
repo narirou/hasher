@@ -1,4 +1,4 @@
-/* global describe, it, before, beforeEach, afterEach */
+/* global describe, it, before, beforeEach */
 
 'use strict';
 
@@ -28,9 +28,7 @@ function createDom( next ) {
 
 describe( 'hasher', function() {
 
-
 	before( createDom );
-
 
 	beforeEach( function() {
 		hasher.reset();
