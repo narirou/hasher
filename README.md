@@ -33,17 +33,46 @@ hasher();
 API
 ---
 
- * **hasher( route{string}, callback[, callback...] )**  
-   set routes.  
-   callback recieved `context` object and `next` function.
+#### hasher( route, callback[, callback...] ) / hasher.set(...)  
+- route {String}
+- callback {Function}  
 
- * **hasher( route{string} )**
-   redirect route.
+Set routes and callbacks.  
+A callback recieved `params` object and `next` function.
 
- * **hasher()** / **hasher.start**  
-   start listening for hashchange event.
+```javascript
+function load( params, next ) {
+    params.num;   //-> '001'
+    params.title; //-> 'first-post'
+    next();       // run `edit` callback
+}
 
- * **hasher.stop**
+function edit() {
+    console.log( 'it called after `load` function.' );
+}
+
+hasher( '/blog/:num/:title/edit', load, edit );
+
+hasher.redirect( '/blog/001/first-post/edit' );
+```
+
+
+#### hasher( route ) / hahser.redirect(...)
+- route {String}
+
+Redirect hashchange route.
+
+
+#### hasher() / hasher.start()  
+Start listening for hashchange event.
+
+
+#### hasher.stop()
+Stop listening for hashchange event.
+
+
+#### hasher.reset()
+Stop listening for hashchange event and clear all options.
 
 
 Based on
