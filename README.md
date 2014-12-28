@@ -1,39 +1,50 @@
 hasher
-====================
+======
 
 > A tiny hashchange router inspired by express.js & page.js
 
-* hasher is a tiny hashchange router for local web applications.  
-  Most web applications now use "pushstate" for its routing function.  
-  "hashchange" is legacy solusion, but it is still useful for the application without server 
-  (for example: local node-webkit applications).
+hasher is a tiny hashchange router.  
+Most web applications now use "pushState" for its routing function.  
+"hashchange" is legacy solusion, but it is still useful for the application without server 
+(for example: local node-webkit applications).
 
-## Usage
+
+Usage
+-----
+
 ```javascript
 var hasher = require( 'hasher' );
 
-// BASEPATH
 hasher( '/', index );
 
-// BASEPATH/#/user/...
 hasher( '/user/:id', load, show );
 hasher( '/user/:id/edit', load, edit );
-hasher( '/user/:id/delete', delete );
-
-// BASEPATH/#/blog/20140315/... 
-hasher( '/blog/:date/:page?', show_blog );
-hasher( '/blog/:date/edit', edit_blog );
+hasher( '/user/:id/delete', del );
 
 hasher( '*', notfound );
 
-hasher(); //start listening for hashchange event
+// Start listening to hashchange event.
+hasher();
 ```
 
-## API
- * **hasher( routing, callback, [callback...] )**  
-   set routes.
- * **hasher()**  
+
+API
+---
+
+ * **hasher( route{string}, callback[, callback...] )**  
+   set routes.  
+   callback recieved `context` object and `next` function.
+
+ * **hasher( route{string} )**
+   redirect route.
+
+ * **hasher()** / **hasher.start**  
    start listening for hashchange event.
 
-## Based on
+ * **hasher.stop**
+
+
+Based on
+--------
+
  * [page.js](https://github.com/visionmedia/page.js) by TJ Holowaychuk.
