@@ -1,11 +1,15 @@
 {
   "name": "hasher",
-  "description": "A tiny hashchange router inspired by express.js & page.js",
-  "version": "0.0.1",
+  "description": "Tiny hashchange router.",
+  "version": "0.1.0",
   "auther": "narirou <narirou.github@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/narirou/hasher.git"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "build": "browserify index.js --standalone hasher -o hahser.js"
   },
   "main": "hasher.js",
   "engines": {
@@ -16,6 +20,14 @@
     "route",
     "hashchange"
   ],
-  "readmeFilename": "README.md",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "path-to-regexp": "^1.0.1"
+  },
+  "devDependencies": {
+    "browserify": "^8.0.2",
+    "jsdom": "^2.0.0",
+    "mocha": "^2.1.0",
+    "should": "^4.4.2"
+  }
 }
