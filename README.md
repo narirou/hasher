@@ -3,6 +3,8 @@ hasher
 
 > A tiny hashchange router inspired by express.js & page.js
 
+[![Build Status](http://img.shields.io/travis/narirou/hasher/master.svg?style=flat-square)](https://travis-ci.org/narirou/hasher)
+
 hasher is a tiny hashchange router.  
 Most web applications now use "pushState" for its routing function.  
 "hashchange" is legacy solusion, but it is still useful for the application without server 
