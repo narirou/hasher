@@ -42,16 +42,16 @@ A callback recieved `params` object and `next` function.
 
 ```javascript
 function load( params, next ) {
-    params.num;   //-> '001'
-    params.title; //-> 'first-post'
-    next();       // run `edit` callback
+    params.num;     //-> '001'
+    params.article; //-> 'first-post'
+    next();         // run `edit` callback
 }
 
 function edit() {
     console.log( 'it called after `load` function.' );
 }
 
-hasher( '/blog/:num/:title/edit', load, edit );
+hasher( '/blog/:num/:article/edit', load, edit );
 
 hasher.redirect( '/blog/001/first-post/edit' );
 ```

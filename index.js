@@ -146,11 +146,11 @@ function show( value, routeIndex ) {
 
 		// set context
 		var keys = route.keys,
-			ctx  = {};
+			params = {};
 
 		if( keys.length ) {
-			for( var j = 1, k = matches.length; j < k; j++ ) {
-				ctx[ keys[ j - 1 ].name ] = matches[ j ];
+			for( var j = 1, pLen = matches.length; j < pLen; j++ ) {
+				params[ keys[ j - 1 ].name ] = matches[ j ];
 			}
 		}
 
@@ -158,12 +158,12 @@ function show( value, routeIndex ) {
 		route.value = value;
 
 		// run callbacks
-		return exec( route, ctx, i );
+		return exec( route, params, i );
 	}
 }
 
 
-function exec( route, ctx, routeIndex ) {
+function exec( route, params, routeIndex ) {
 	var i = 0;
 
 	var next = function() {
@@ -172,7 +172,7 @@ function exec( route, ctx, routeIndex ) {
 		// next callbacks
 		if( fn ) {
 			i++;
-			return fn( ctx , next );
+			return fn( params , next );
 		}
 
 		// next statement

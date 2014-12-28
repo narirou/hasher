@@ -53,7 +53,7 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should redirect page', function( done ) {
+	it( 'should run at specific page', function( done ) {
 		hasher( '/page', function() {
 			done();
 		});
@@ -61,7 +61,7 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should redirect page by hashchange event', function( done ) {
+	it( 'should redirect by hashchange event', function( done ) {
 		hasher( '/page', function() {
 			done();
 		});
@@ -70,32 +70,32 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should get hash values', function( done ) {
-		hasher( '/page/:num/:operation', function( ctx ) {
-			should( ctx.num ).eql( '123' );
-			should( ctx.operation ).eql( 'edit' );
+	it( 'should get params', function( done ) {
+		hasher( '/page/:num/:operation', function( params ) {
+			should( params.num ).eql( '123' );
+			should( params.operation ).eql( 'edit' );
 			done();
 		});
 		hasher( '/page/123/edit' );
 	});
 
 
-	it( 'should invoke next matching statement', function( done ) {
-		hasher( '/page/:all*', function( ctx, next ) {
+	it( 'should run next matching statement', function( done ) {
+		hasher( '/page/:all*', function( params, next ) {
 			next();
 		});
 		hasher( '/page-not-visited', function() {
 		});
-		hasher( '/page/:num/:operation', function( ctx ) {
-			should( ctx.num ).eql( '456' );
-			should( ctx.operation ).eql( 'delete' );
+		hasher( '/page/:num/:operation', function( params ) {
+			should( params.num ).eql( '456' );
+			should( params.operation ).eql( 'delete' );
 			done();
 		});
 		hasher( '/page/456/delete' );
 	});
 
 
-	it( 'should invoke not-found statement', function( done ) {
+	it( 'should run not-found statement', function( done ) {
 		hasher( function() {
 			done();
 		});
