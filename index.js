@@ -110,7 +110,7 @@ hasher.redirect = hasher.show = function( hash ) {
 	show( hasher.current );
 
 	if( running ) {
-		setImmediate( function() {
+		setTimeout( 0, function() {
 			hasher.start( true );
 		});
 	}
