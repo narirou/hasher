@@ -94,7 +94,7 @@ hasher.redirect = hasher.show = function( hash ) {
 	// same page
 	var nextHash = hashValue( hash );
 	if( hasher.current === nextHash ) {
-		return;
+		return hasher;
 	}
 
 	// change
