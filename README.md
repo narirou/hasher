@@ -25,7 +25,7 @@ hasher( '/user/:id/delete', del );
 
 hasher( '*', notfound );
 
-// Start listening to hashchange event.
+// Begin monitoring hashchange events
 hasher();
 ```
 
