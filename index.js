@@ -194,5 +194,7 @@ function exec( route, params, routeIndex ) {
 
 
 function showCurrent() {
-	show( hashValue() );
+	var current = hashValue();
+	hasher.current = current;
+	show( current );
 }

@@ -55,6 +55,7 @@ describe( 'hasher', function() {
 
 	it( 'should run at specific page', function( done ) {
 		hasher( '/page', function() {
+			should( hasher.current ).eql( '/page' );
 			done();
 		});
 		hasher( '/page' );
@@ -63,6 +64,7 @@ describe( 'hasher', function() {
 
 	it( 'should redirect by hashchange event', function( done ) {
 		hasher( '/page', function() {
+			should( hasher.current ).eql( '/page' );
 			done();
 		});
 		hasher();
