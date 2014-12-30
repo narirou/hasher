@@ -1,7 +1,7 @@
 {
   "name": "hasher",
   "description": "Tiny hashchange router.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "auther": "narirou <narirou.github@gmail.com>",
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
     "test": "mocha --reporter spec",
     "build": "browserify index.js --standalone hasher -o hahser.js"
   },
-  "main": "hasher.js",
+  "main": "index.js",
   "engines": {
     "node": ">=0.8.0"
   },
