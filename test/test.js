@@ -35,6 +35,14 @@ describe( 'hasher', function() {
 	});
 
 
+	it( 'should set route', function( done ) {
+		hasher.set( '/', function() {
+			done();
+		});
+		hasher();
+	});
+
+
 	it( 'should run at start page', function( done ) {
 		hasher( '/', function() {
 			done();

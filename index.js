@@ -74,6 +74,12 @@ hasher.stop = function() {
 hasher.set = function( path, args ) {
 	var route = new Route( path, hasher.options );
 
+	// hasher.set called direct
+	if( typeof args === 'function' ) {
+		args = arguments;
+	}
+
+	// set callbacks
 	for( var i = 0, len = args.length; i < len; i++ ) {
 		var callback = args[ i ];
 
@@ -82,7 +88,10 @@ hasher.set = function( path, args ) {
 		}
 	}
 
-	hasher.routes.push( route );
+	// set routes
+	if( route.callbacks.length ) {
+		hasher.routes.push( route );
+	}
 
 	return hasher;
 };
