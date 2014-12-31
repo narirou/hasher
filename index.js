@@ -184,7 +184,7 @@ function exec( route, params, routeIndex ) {
 			return fn( params , next );
 		}
 
-		// next statement
+		// next route
 		else {
 			routeIndex++;
 			return show( route.value, routeIndex );

@@ -43,8 +43,17 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should run second callback', function( done ) {
-		hasher( '/', function( ctx, next ) {
+	it( 'should run at specific page', function( done ) {
+		hasher( '/page', function() {
+			should( hasher.current ).eql( '/page' );
+			done();
+		});
+		hasher( '/page' );
+	});
+
+
+	it( 'should call second callback', function( done ) {
+		hasher( '/', function( params, next ) {
 			next();
 		}, function() {
 			done();
@@ -53,12 +62,15 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should run at specific page', function( done ) {
-		hasher( '/page', function() {
-			should( hasher.current ).eql( '/page' );
+	it( 'should call third callback', function( done ) {
+		hasher( '/', function( params, next ) {
+			next();
+		}, function( params, next ) {
+			next();
+		}, function() {
 			done();
 		});
-		hasher( '/page' );
+		hasher( '/' );
 	});
 
 
@@ -82,7 +94,7 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should run next matching statement', function( done ) {
+	it( 'should run next-matched route', function( done ) {
 		hasher( '/page/:all*', function( params, next ) {
 			next();
 		});
@@ -97,7 +109,7 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should run at all matched', function( done ) {
+	it( 'should run all-matched route', function( done ) {
 		hasher( '*', function() {
 			done();
 		});
@@ -105,7 +117,7 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should run not-found statement', function( done ) {
+	it( 'should run all-matched route alias', function( done ) {
 		hasher( function() {
 			done();
 		});
