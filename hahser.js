@@ -4,12 +4,12 @@
 var pathToRegexp = require( 'path-to-regexp' );
 
 
-function Route( path ) {
+function Route( path, options ) {
 	this.path = ( path === '*' ) ? '(.*)' : path;
 	this.value = '';
 	this.callbacks = [];
 	this.keys = [];
-	this.regexp = pathToRegexp( path, this.keys );
+	this.regexp = pathToRegexp( this.path, this.keys, options );
 }
 
 
@@ -44,9 +44,16 @@ hasher.running = false;
 hasher.current = '';
 
 
+hasher.options = {
+	sensitive: false,
+	strict: false,
+	end: true
+};
+
+
 hasher.start = function( notStartCurrent ) {
 	if( hasher.running ) {
-		return;
+		return hasher;
 	}
 
 	hasher.running = true;
@@ -63,7 +70,7 @@ hasher.start = function( notStartCurrent ) {
 
 hasher.stop = function() {
 	if( ! hasher.running ) {
-		return;
+		return hasher;
 	}
 
 	hasher.running = false;
@@ -75,10 +82,10 @@ hasher.stop = function() {
 
 
 hasher.set = function( path, args ) {
-	var route = new Route( path );
+	var route = new Route( path, hasher.options );
 
 	for( var i = 0, len = args.length; i < len; i++ ) {
-		var callback = args[i];
+		var callback = args[ i ];
 
 		if( typeof callback === 'function' ) {
 			route.callbacks.push( callback );
@@ -143,9 +150,11 @@ function show( value, routeIndex ) {
 		var route   = hasher.routes[ i ],
 			matches = route.regexp.exec( decodeURIComponent( value ) );
 
-		if( ! matches ) continue;
+		if( ! matches ) {
+			continue;
+		}
 
-		// set context
+		// set params
 		var keys = route.keys,
 			params = {};
 
@@ -188,7 +197,9 @@ function exec( route, params, routeIndex ) {
 
 
 function showCurrent() {
-	show( hashValue() );
+	var current = hashValue();
+	hasher.current = current;
+	show( current );
 }
 
 },{"path-to-regexp":2}],2:[function(require,module,exports){
