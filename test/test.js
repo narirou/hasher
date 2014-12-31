@@ -46,6 +46,7 @@ describe( 'hasher', function() {
 	it( 'should run at specific page', function( done ) {
 		hasher( '/page', function() {
 			should( hasher.current ).eql( '/page' );
+			should( global.window.location.hash ).eql( '#/page' );
 			done();
 		});
 		hasher( '/page' );
@@ -122,5 +123,40 @@ describe( 'hasher', function() {
 			done();
 		});
 		hasher( '/not-found' );
+	});
+
+
+	it( 'should set strict options', function( done ) {
+		var entered = false;
+
+		hasher.options.strict = true;
+
+		hasher( '/strict', function( params, next ) {
+			entered = true;
+			next();
+		});
+		hasher( '/strict/', function() {
+			should( entered ).eql( false );
+			done();
+		});
+		hasher( '/strict/' );
+	});
+
+
+	it( 'should reset options', function( done ) {
+		hasher.options.strict = true;
+
+		hasher( '/page1/', function() {
+			should( hasher.options.strict ).eql( true );
+		});
+		hasher( '/page1/' );
+
+		hasher.reset();
+
+		hasher( '/page2', function() {
+			should( hasher.options.strict ).eql( false );
+			done();
+		});
+		hasher( '/page2/' );
 	});
 });
