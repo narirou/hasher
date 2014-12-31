@@ -3,15 +3,6 @@
 var pathToRegexp = require( 'path-to-regexp' );
 
 
-function Route( path, options ) {
-	this.path = ( path === '*' ) ? '(.*)' : path;
-	this.value = '';
-	this.callbacks = [];
-	this.keys = [];
-	this.regexp = pathToRegexp( this.path, this.keys, options );
-}
-
-
 var hasher = module.exports = function( path, fn ) {
 	if( ! arguments.length ) {
 		return hasher.start();
@@ -130,7 +121,21 @@ hasher.reset = function() {
 	hasher.stop();
 	hasher.routes = [];
 	hasher.current = '';
+	hasher.options = {
+		sensitive: false,
+		strict: false,
+		end: true
+	};
 };
+
+
+function Route( path, options ) {
+	this.path = ( path === '*' ) ? '(.*)' : path;
+	this.value = '';
+	this.callbacks = [];
+	this.keys = [];
+	this.regexp = pathToRegexp( this.path, this.keys, options );
+}
 
 
 function hashValue( hash ) {
@@ -196,7 +201,5 @@ function exec( route, params, routeIndex ) {
 
 
 function showCurrent() {
-	var current = hashValue();
-	hasher.current = current;
-	show( current );
+	show( hasher.current = hashValue() );
 }
