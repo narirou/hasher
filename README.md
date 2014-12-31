@@ -64,15 +64,15 @@ Redirect hashchange route.
 
 
 #### hasher() / hasher.start()  
-Start listening for hashchange event.
+Begin monitoring hashchange events.
 
 
 #### hasher.stop()
-Stop listening for hashchange event.
+Stop monitoring hashchange events.
 
 
 #### hasher.reset()
-Stop listening for hashchange event and clear all options.
+Stop monitoring hashchange events and clear all options.
 
 
 Based on
