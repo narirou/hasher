@@ -97,6 +97,14 @@ describe( 'hasher', function() {
 	});
 
 
+	it( 'should run at all matched', function( done ) {
+		hasher( '*', function() {
+			done();
+		});
+		hasher( '/all-matched' );
+	});
+
+
 	it( 'should run not-found statement', function( done ) {
 		hasher( function() {
 			done();

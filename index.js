@@ -8,7 +8,7 @@ function Route( path, options ) {
 	this.value = '';
 	this.callbacks = [];
 	this.keys = [];
-	this.regexp = pathToRegexp( path, this.keys, options );
+	this.regexp = pathToRegexp( this.path, this.keys, options );
 }
 
 
@@ -84,7 +84,7 @@ hasher.set = function( path, args ) {
 	var route = new Route( path, hasher.options );
 
 	for( var i = 0, len = args.length; i < len; i++ ) {
-		var callback = args[i];
+		var callback = args[ i ];
 
 		if( typeof callback === 'function' ) {
 			route.callbacks.push( callback );
@@ -149,7 +149,9 @@ function show( value, routeIndex ) {
 		var route   = hasher.routes[ i ],
 			matches = route.regexp.exec( decodeURIComponent( value ) );
 
-		if( ! matches ) continue;
+		if( ! matches ) {
+			continue;
+		}
 
 		// set params
 		var keys = route.keys,
