@@ -35,11 +35,11 @@ describe( 'hasher', function() {
 	});
 
 
-	it( 'should set route', function( done ) {
-		hasher.set( '/', function() {
-			done();
-		});
-		hasher();
+	it( 'should set route', function() {
+		var fn = function() {};
+		hasher.set( '/', fn );
+		should( hasher.routes[ 0 ].path ).eql( '/' );
+		should( hasher.routes[ 0 ].callbacks[ 0 ] ).eql( fn );
 	});
 
 
@@ -166,5 +166,18 @@ describe( 'hasher', function() {
 			done();
 		});
 		hasher( '/page2/' );
+	});
+
+
+	it( 'should work with method chaining', function( done ) {
+		hasher
+			.set( '*', function( params, next ) {
+				next();
+			})
+			.set( '/page', function() {
+				done();
+			})
+			.start()
+			.redirect( '/page' );
 	});
 });
