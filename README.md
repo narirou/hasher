@@ -3,11 +3,17 @@ hasher
 
 > A tiny hashchange router inspired by express.js & page.js
 
-[![Build Status](http://img.shields.io/travis/narirou/hasher/master.svg?style=flat-square)](https://travis-ci.org/narirou/hasher)
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
+[travis-image]: https://img.shields.io/travis/narirou/hasher.svg?style=flat-square
+[travis-url]: https://travis-ci.org/narirou/hasher
+[coveralls-image]: https://img.shields.io/coveralls/narirou/hasher.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/narirou/hasher?branch=master
 
 hasher is a tiny hashchange router.  
 Most web applications now use "pushState" for its routing function.  
-"hashchange" is legacy solusion, but it is still useful for the application without server 
+"hashchange" is legacy solution, but it is still useful for the application without server 
 (for example: local node-webkit applications).
 
 
@@ -38,7 +44,7 @@ API
 - callback {Function}  
 
 Set routes and callbacks.  
-A callback recieved `params` object and `next` function.
+Each callback is invoked `params` object and `next` function.
 
 ```javascript
 function load( params, next ) {
@@ -79,3 +85,4 @@ Based on
 --------
 
  * [page.js](https://github.com/visionmedia/page.js) by TJ Holowaychuk.
+

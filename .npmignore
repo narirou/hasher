@@ -1,6 +1,7 @@
 .git*
 .editorconfig
-.travis.yml
+.yml
 .npmignore
 Gruntfile.*
 test/*
+coverage/*

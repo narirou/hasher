@@ -8,7 +8,7 @@
     "url": "https://github.com/narirou/hasher.git"
   },
   "scripts": {
-    "test": "mocha --reporter spec",
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- --reporter spec",
     "build": "browserify index.js --standalone hasher -o hahser.js"
   },
   "main": "index.js",
@@ -28,6 +28,7 @@
     "browserify": "^8.0.2",
     "jsdom": "^2.0.0",
     "mocha": "^2.1.0",
-    "should": "^4.4.2"
+    "should": "^4.4.2",
+    "istanbul": "~0.3.5"
   }
 }
