@@ -5,11 +5,15 @@ hasher
 
 [![Build Status][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
+[![MIT Licensed][license-image]][license-url]
 
 [travis-image]: https://img.shields.io/travis/narirou/hasher.svg?style=flat-square
 [travis-url]: https://travis-ci.org/narirou/hasher
 [coveralls-image]: https://img.shields.io/coveralls/narirou/hasher.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/narirou/hasher?branch=master
+[license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
+[license-url]: http://opensource.org/licenses/MIT
+
 
 hasher is a tiny hashchange router.  
 Most web applications now use "pushState" for its routing function.  
