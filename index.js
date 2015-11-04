@@ -117,9 +117,9 @@ hasher.redirect = hasher.show = function( hash ) {
 	show( hasher.current );
 
 	if( running ) {
-		setTimeout( 0, function() {
+		setTimeout( function() {
 			hasher.start( true );
-		});
+		}, 0 );
 	}
 
 	return hasher;
