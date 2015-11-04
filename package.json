@@ -1,7 +1,7 @@
 {
   "name": "hasher",
   "description": "Tiny hashchange router.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "auther": "narirou <narirou.github@gmail.com>",
   "repository": {
     "type": "git",
