@@ -1,214 +1,162 @@
-'use strict';
+import pathToRegexp from 'path-to-regexp';
 
-var pathToRegexp = require( 'path-to-regexp' );
-
-
-var hasher = module.exports = function( path, fn ) {
-	if( ! arguments.length ) {
-		return hasher.start();
-	}
-
-	if( typeof path === 'string' ) {
-		if( typeof fn === 'function' ) {
-			return hasher.set( path, arguments );
-		}
-		else {
-			return hasher.redirect( path );
-		}
-	}
-
-	if( typeof path === 'function' ) {
-		return hasher.set( '(.*)', arguments );
-	}
-
-	throw new Error( 'Invalid arguments.' );
+const defaultOptions = {
+    sensitive: false,
+    strict: false,
+    end: true,
 };
 
+let running = false;
+
+export default function hasher(path, ...args) {
+    if (!path) {
+        return hasher.start();
+    }
+
+    const callbacks = args.filter(isFunction);
+
+    if (typeof path === 'function') {
+        return hasher.set('(.*)', path);
+    }
+
+    if (typeof path === 'string') {
+        if (callbacks.length) {
+            return hasher.set(path, callbacks);
+        }
+        return hasher.redirect(path);
+    }
+
+    throw new Error('Invalid arguments.');
+}
 
 hasher.routes = [];
-
-
-hasher.running = false;
-
-
+hasher.running = () => running;
 hasher.current = '';
+hasher.options = Object.assign({}, defaultOptions);
 
+hasher.start = function start(silent) {
+    if (running) {
+        return hasher;
+    }
 
-hasher.options = {
-	sensitive: false,
-	strict: false,
-	end: true
+    running = true;
+    window.addEventListener('hashchange', updateCurrentHash, false);
+
+    if (!silent) {
+        updateCurrentHash();
+    }
+
+    return hasher;
 };
 
+hasher.stop = function stop() {
+    running = false;
+    window.removeEventListener('hashchange', updateCurrentHash, false);
 
-hasher.start = function( notStartCurrent ) {
-	if( hasher.running ) {
-		return hasher;
-	}
-
-	hasher.running = true;
-
-	window.addEventListener( 'hashchange', showCurrent, false );
-
-	if( ! notStartCurrent ) {
-		showCurrent();
-	}
-
-	return hasher;
+    return hasher;
 };
 
+hasher.set = function set(path, ...args) {
+    let callbacks = [];
+    if (typeof args[0] === 'object' && args.length === 1) {
+        callbacks = args[0];
+    } else {
+        callbacks = args.filter(isFunction);
+    }
 
-hasher.stop = function() {
-	if( ! hasher.running ) {
-		return hasher;
-	}
+    // set callbacks
+    const route = new Route(path, callbacks, hasher.options);
 
-	hasher.running = false;
+    // set routes
+    if (route.callbacks.length) {
+        hasher.routes.push(route);
+    }
 
-	window.removeEventListener( 'hashchange', showCurrent, false );
-
-	return hasher;
+    return hasher;
 };
 
+hasher.redirect = function redirect(hash) {
+    if (!hash) {
+        return hasher;
+    }
 
-hasher.set = function( path, args ) {
-	var route = new Route( path, hasher.options );
+    window.location.hash = '#' + hash;
 
-	// hasher.set called direct
-	if( typeof args === 'function' ) {
-		args = arguments;
-	}
+    if (!running) {
+        updateCurrentHash();
+        return hasher;
+    }
 
-	// set callbacks
-	for( var i = 0, len = args.length; i < len; i++ ) {
-		var callback = args[ i ];
-
-		if( typeof callback === 'function' ) {
-			route.callbacks.push( callback );
-		}
-	}
-
-	// set routes
-	if( route.callbacks.length ) {
-		hasher.routes.push( route );
-	}
-
-	return hasher;
+    return hasher;
 };
 
-
-hasher.redirect = hasher.show = function( hash ) {
-	// same page
-	var nextHash = hashValue( hash );
-	if( hasher.current === nextHash ) {
-		return hasher;
-	}
-
-	// change
-	var running = hasher.running;
-	if( running ) {
-		hasher.stop();
-	}
-
-	hasher.current = nextHash;
-
-	window.location.hash = '#' + hasher.current;
-
-	show( hasher.current );
-
-	if( running ) {
-		setTimeout( function() {
-			hasher.start( true );
-		}, 0 );
-	}
-
-	return hasher;
+hasher.reset = function rest() {
+    hasher.stop();
+    hasher.routes = [];
+    hasher.current = '';
+    hasher.options = Object.assign({}, defaultOptions);
 };
 
-
-hasher.reset = function() {
-	hasher.stop();
-	hasher.routes = [];
-	hasher.current = '';
-	hasher.options = {
-		sensitive: false,
-		strict: false,
-		end: true
-	};
+const isFunction = function isFunction(fn) {
+    return typeof fn === 'function';
 };
 
-
-function Route( path, options ) {
-	this.path = ( path === '*' ) ? '(.*)' : path;
-	this.value = '';
-	this.callbacks = [];
-	this.keys = [];
-	this.regexp = pathToRegexp( this.path, this.keys, options );
+function Route(path, callbacks, options) {
+    this.path = (path === '*') ? '(.*)' : path;
+    this.value = '';
+    this.callbacks = callbacks;
+    this.keys = [];
+    this.regexp = pathToRegexp(this.path, this.keys, options);
 }
 
+function show(hash, routeIndex) {
+    for (let i = routeIndex || 0, len = hasher.routes.length; i < len; i += 1) {
+        const route = hasher.routes[i];
+        const matches = route.regexp.exec(decodeURIComponent(hash));
 
-function hashValue( hash ) {
-	hash = hash || window.location.hash;
-	if( hash ) {
-		return hash.replace( '#', '' );
-	}
-	else {
-		return '/';
-	}
+        if (!matches) {
+            continue;
+        }
+
+        // set params
+        const keys = route.keys;
+        const params = {};
+        if (keys.length) {
+            for (let j = 1, pLen = matches.length; j < pLen; j += 1) {
+                params[keys[j - 1].name] = matches[j];
+            }
+        }
+
+        // set current hash
+        route.value = hash;
+
+        // run callbacks
+        runCallback(route, params, i);
+        return;
+    }
 }
 
+function runCallback(route, params, routeIndex) {
+    let i = 0;
 
-function show( value, routeIndex ) {
-	for( var i = routeIndex || 0, len = hasher.routes.length; i < len; i++ ) {
-		var route   = hasher.routes[ i ],
-			matches = route.regexp.exec( decodeURIComponent( value ) );
+    const next = function next() {
+        const callback = route.callbacks[i];
 
-		if( ! matches ) {
-			continue;
-		}
+        // next callback
+        if (callback) {
+            i += 1;
+            return callback(params, next);
+        }
 
-		// set params
-		var keys = route.keys,
-			params = {};
+        // next route
+        routeIndex += 1;
+        return show(route.value, routeIndex);
+    };
 
-		if( keys.length ) {
-			for( var j = 1, pLen = matches.length; j < pLen; j++ ) {
-				params[ keys[ j - 1 ].name ] = matches[ j ];
-			}
-		}
-
-		// set current value
-		route.value = value;
-
-		// run callbacks
-		return exec( route, params, i );
-	}
+    return next();
 }
 
-
-function exec( route, params, routeIndex ) {
-	var i = 0;
-
-	var next = function() {
-		var fn = route.callbacks[ i ];
-
-		// next callbacks
-		if( fn ) {
-			i++;
-			return fn( params , next );
-		}
-
-		// next route
-		else {
-			routeIndex++;
-			return show( route.value, routeIndex );
-		}
-	};
-
-	return next();
-}
-
-
-function showCurrent() {
-	show( hasher.current = hashValue() );
+function updateCurrentHash() {
+    hasher.current = window.location.hash.replace('#', '') || '/';
+    show(hasher.current);
 }

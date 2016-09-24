@@ -1,183 +1,156 @@
-/* global describe, it, before, beforeEach */
+import test from 'ava';
+import browser from './helpers/browser';
+import hasher from '../';
 
-'use strict';
+test.beforeEach(() => {
+    hasher.reset();
+    browser();
+});
 
-var	jsdom  = require( 'jsdom' ),
-	should = require( 'should' ),
-	hasher = require( '../' );
+test('should set route', (t) => {
+    const fn = function callback() {};
+    hasher.set('/', fn);
+    t.is(hasher.routes[0].path, '/');
+    t.is(hasher.routes[0].callbacks[0], fn);
+});
 
+test.cb('should run at start page', (t) => {
+    hasher('/', () => {
+        t.end();
+    });
+    hasher();
+});
 
-function createDom( next ) {
-	jsdom.env({
-		html: '<!doctype html><html><head></head><body></body></html>',
-		done: function( errors, window ) {
-			if( errors ) {
-				errors.forEach( console.log );
-				throw new Error( errors );
-			}
-			window.console = console;
-			global.window = window;
-			global.location = window.location;
-			global.document = window.document;
-			global.history = window.history;
-			next();
-		}
-	});
-}
+test.cb('should run at specific page', (t) => {
+    hasher('/page', () => {
+        t.is(hasher.current, '/page');
+        t.is(global.window.location.hash, '#/page');
+        t.end();
+    });
+    hasher('/page');
+});
 
+test.cb('should call second callback', (t) => {
+    hasher('/', (params, next) => {
+        next();
+    }, () => {
+        t.end();
+    });
+    hasher('/');
+});
 
-describe( 'hasher', function() {
+test.cb('should call third callback', (t) => {
+    hasher('/', (params, next) => {
+        next();
+    }, (params, next) => {
+        next();
+    }, () => {
+        t.end();
+    });
+    hasher('/');
+});
 
-	before( createDom );
+test.cb('should redirect when hashchange event fired', (t) => {
+    hasher('/page', () => {
+        t.is(hasher.current, '/page');
+        t.end();
+    });
+    hasher();
+    global.window.location.hash = '#/page';
+});
 
-	beforeEach( function() {
-		hasher.reset();
-	});
+test.cb('should redirect after start function', (t) => {
+    hasher('/page2', () => {
+        t.is(hasher.current, '/page2');
+        t.end();
+    });
+    hasher.start();
+    hasher.redirect('/page2');
+});
 
+test.cb('should get params', (t) => {
+    hasher('/page/:num/:operation', (params) => {
+        t.is(params.num, '123');
+        t.is(params.operation, 'edit');
+        t.end();
+    });
+    hasher('/page/123/edit');
+});
 
-	it( 'should set route', function() {
-		var fn = function() {};
-		hasher.set( '/', fn );
-		should( hasher.routes[ 0 ].path ).eql( '/' );
-		should( hasher.routes[ 0 ].callbacks[ 0 ] ).eql( fn );
-	});
+test.cb('should run next-matched route', (t) => {
+    hasher('/page/:all(.*)', (params, next) => {
+        next();
+    });
 
+    hasher('/this-route-wont-be-call', () => {});
 
-	it( 'should run at start page', function( done ) {
-		hasher( '/', function() {
-			done();
-		});
-		hasher();
-	});
+    hasher('/page/:num/:operation', (params) => {
+        t.is(params.num, '456');
+        t.is(params.operation, 'delete');
+        t.end();
+    });
 
+    hasher('/page/456/delete');
+});
 
-	it( 'should run at specific page', function( done ) {
-		hasher( '/page', function() {
-			should( hasher.current ).eql( '/page' );
-			should( global.window.location.hash ).eql( '#/page' );
-			done();
-		});
-		hasher( '/page' );
-	});
+test.cb('should run all-matched route', (t) => {
+    hasher('*', () => {
+        t.end();
+    });
+    hasher('/all-matched');
+});
 
+test.cb('should run all-matched route alias', (t) => {
+    hasher(() => {
+        t.end();
+    });
+    hasher('/not-found');
+});
 
-	it( 'should call second callback', function( done ) {
-		hasher( '/', function( params, next ) {
-			next();
-		}, function() {
-			done();
-		});
-		hasher( '/' );
-	});
+test.cb('should set strict options', (t) => {
+    let entered = false;
 
+    hasher.options.strict = true;
 
-	it( 'should call third callback', function( done ) {
-		hasher( '/', function( params, next ) {
-			next();
-		}, function( params, next ) {
-			next();
-		}, function() {
-			done();
-		});
-		hasher( '/' );
-	});
+    hasher('/strict', (params, next) => {
+        entered = true;
+        next();
+    });
+    hasher('/strict/', () => {
+        t.is(entered, false);
+        t.end();
+    });
+    hasher('/strict/');
+});
 
+test.cb('should reset options', (t) => {
+    hasher.options.strict = true;
 
-	it( 'should redirect by hashchange event', function( done ) {
-		hasher( '/page', function() {
-			should( hasher.current ).eql( '/page' );
-			done();
-		});
-		hasher();
-		global.window.location.hash  ='#/page';
-	});
+    hasher('/page1/', () => {
+        t.is(hasher.options.strict, true);
+    });
+    hasher('/page1/');
 
+    hasher.reset();
 
-	it( 'should get params', function( done ) {
-		hasher( '/page/:num/:operation', function( params ) {
-			should( params.num ).eql( '123' );
-			should( params.operation ).eql( 'edit' );
-			done();
-		});
-		hasher( '/page/123/edit' );
-	});
+    hasher('/page2', () => {
+        t.is(hasher.options.strict, false);
+        t.end();
+    });
+    hasher('/page2/');
+});
 
-
-	it( 'should run next-matched route', function( done ) {
-		hasher( '/page/:all*', function( params, next ) {
-			next();
-		});
-		hasher( '/page-not-visited', function() {
-		});
-		hasher( '/page/:num/:operation', function( params ) {
-			should( params.num ).eql( '456' );
-			should( params.operation ).eql( 'delete' );
-			done();
-		});
-		hasher( '/page/456/delete' );
-	});
-
-
-	it( 'should run all-matched route', function( done ) {
-		hasher( '*', function() {
-			done();
-		});
-		hasher( '/all-matched' );
-	});
-
-
-	it( 'should run all-matched route alias', function( done ) {
-		hasher( function() {
-			done();
-		});
-		hasher( '/not-found' );
-	});
-
-
-	it( 'should set strict options', function( done ) {
-		var entered = false;
-
-		hasher.options.strict = true;
-
-		hasher( '/strict', function( params, next ) {
-			entered = true;
-			next();
-		});
-		hasher( '/strict/', function() {
-			should( entered ).eql( false );
-			done();
-		});
-		hasher( '/strict/' );
-	});
-
-
-	it( 'should reset options', function( done ) {
-		hasher.options.strict = true;
-
-		hasher( '/page1/', function() {
-			should( hasher.options.strict ).eql( true );
-		});
-		hasher( '/page1/' );
-
-		hasher.reset();
-
-		hasher( '/page2', function() {
-			should( hasher.options.strict ).eql( false );
-			done();
-		});
-		hasher( '/page2/' );
-	});
-
-
-	it( 'should work with method chaining', function( done ) {
-		hasher
-			.set( '*', function( params, next ) {
-				next();
-			})
-			.set( '/page', function() {
-				done();
-			})
-			.start()
-			.redirect( '/page' );
-	});
+test.cb('should work with method chaining', (t) => {
+    hasher
+        .set('*', (params, next) => {
+            next();
+        })
+        .set('/page2', () => {
+            t.end();
+        })
+        .set('/page', () => {
+            hasher.redirect('/page2');
+        })
+        .start()
+        .redirect('/page');
 });
