@@ -17,7 +17,7 @@ hasher
 
 hasher is a tiny hashchange router.  
 Most web applications now use "pushState" for its routing function.  
-"hashchange" is legacy solution, but it is still useful for the application without server 
+"hashchange" is legacy solution, but it is still useful for the application without server
 (for example: local node-webkit applications).
 
 
@@ -25,15 +25,15 @@ Usage
 -----
 
 ```javascript
-var hasher = require( 'hasher' );
+import hasher from 'hasher';
 
-hasher( '/', index );
+hasher('/', index);
 
-hasher( '/user/:id', load, show );
-hasher( '/user/:id/edit', load, edit );
-hasher( '/user/:id/delete', del );
+hasher('/user/:id', load, show);
+hasher('/user/:id/edit', load, edit);
+hasher('/user/:id/delete', del);
 
-hasher( '*', notfound );
+hasher('*', notfound);
 
 // Begin monitoring hashchange events
 hasher();
@@ -51,19 +51,19 @@ Set routes and callbacks.
 Each callback is invoked `params` object and `next` function.
 
 ```javascript
-function load( params, next ) {
+function load(params, next) {
     params.num;     //-> '001'
     params.article; //-> 'first-post'
     next();         // run `edit` callback
 }
 
 function edit() {
-    console.log( 'it called after `load` function.' );
+    console.log('it called after `load` function.');
 }
 
-hasher( '/blog/:num/:article/edit', load, edit );
+hasher('/blog/:num/:article/edit', load, edit);
 
-hasher.redirect( '/blog/001/first-post/edit' );
+hasher.redirect('/blog/001/first-post/edit');
 ```
 
 
@@ -88,5 +88,4 @@ Stop monitoring hashchange events and clear all options.
 Based on
 --------
 
- * [page.js](https://github.com/visionmedia/page.js) by TJ Holowaychuk.
-
+* [page.js](https://github.com/visionmedia/page.js) by TJ Holowaychuk.

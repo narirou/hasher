@@ -1,8 +1,7 @@
-# Editor Config
 root = true
 
 [*]
-indent_style = tab
+indent_style = space
 indent_size = 4
 end_of_line = lf
 charset = utf-8
@@ -13,11 +12,5 @@ insert_final_newline = true
 indent_style = space
 indent_size = 2
 
-[.travis.yml]
-indent_style = space
-indent_size = 2
-
-[*.md]
-indent_style = space
-indent_size = 4
+[{*.md,pr-release.template}]
 trim_trailing_whitespace = false

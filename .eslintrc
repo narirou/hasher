@@ -1,0 +1,21 @@
+root: true
+
+extends: "airbnb"
+
+env:
+    browser: true
+    node: true
+    mocha: true
+
+rules:
+    strict: 0
+    indent: [2, 4, { SwitchCase: 1 }]
+    vars-on-top: 0
+    no-use-before-define: 0
+    max-len: [1, 200]
+    new-cap: 0
+    no-console: ["error", { allow: ["warn", "error"] }]
+    no-continue: 0
+    prefer-template: 0
+    no-param-reassign: 0
+    import/no-extraneous-dependencies: ["error", { devDependencies: true }]

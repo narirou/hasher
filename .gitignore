@@ -1,41 +1,5 @@
-# Project Files
-
-# Tools
-*.sublime-workspace
-*.sublime-project
-
-# Node
-node_modules
-
-# Coverages
-.coveralls.yml
-coverage
-
-# Packages
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-
-# Logs / Databases
+node_modules/
+coverage/
+.nyc_output/
+hasher.js
 *.log
-*.sql
-*.sqlite
-*.db
-
-# OS Generated Files
-*.DS_Store
-*.DS_Store?
-*._
-*.Spotlight-V100
-*.Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
-
-# Junc Copy Files
-*コピー*
